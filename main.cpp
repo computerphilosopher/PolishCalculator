@@ -1,6 +1,7 @@
 #include <iostream>
 #include <vector>
 #include <queue>
+#include <string>
 
 using namespace std;
 
@@ -295,16 +296,19 @@ public:
 
 int main() {
 
-	string exp = "100+23";
+	string exp;
+	cout << "input expression>>";
+
+	cin >> exp;
+
 	PolishCalculator cal(exp);
 	cal.ParsingExpression();
 
-	//cal.printQueue();
 	cal.ToPostfix();
 
 	cal.Calculate();
 
 	getchar();
-
+	getchar();
 
 }
