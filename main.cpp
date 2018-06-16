@@ -6,7 +6,8 @@
 
 using namespace std;
 
-int main() {
+int main()
+{
 
 	string exp;
 	cout << "input expression>>";
@@ -25,23 +26,29 @@ int main() {
 
 }
 
-element::element(int dataType, int value) {
+element::element(int dataType, int value)
+{
 	this->dataType = dataType;
 	this->value = value;
 }
 
-element::element() {
+element::element()
+{
 
 }
 
-int element::GetType() {
+int element::GetType()
+{
 	return dataType;
 }
 
-int element::GetValue() {
+int element::GetValue()
+{
 	return value;
 }
-int element::GetPriority() {
+
+int element::GetPriority()
+{
 	switch (value) {
 	case LEFT_PAREN:
 		return 0;
@@ -63,11 +70,13 @@ int element::GetPriority() {
 }
 
 
-PolishCalculator::PolishCalculator(string expression) {
+PolishCalculator::PolishCalculator(string expression)
+{
 	this->expression = expression;
 }
 
-void PolishCalculator::ParsingExpression() {
+void PolishCalculator::ParsingExpression()
+{
 	int i = 0;
 	while ((unsigned)i < expression.size()) {
 		if (isdigit(expression[i])) {
@@ -100,7 +109,8 @@ void PolishCalculator::ParsingExpression() {
 
 }
 
-int PolishCalculator::ParsingNum(int i) {
+int PolishCalculator::ParsingNum(int i)
+{
 	Stack<int> number;
 
 	while (isdigit(expression[i])) {
@@ -113,7 +123,8 @@ int PolishCalculator::ParsingNum(int i) {
 	return i;
 }
 
-void PolishCalculator::printQueue() {
+void PolishCalculator::printQueue()
+{
 	queue<element> temp = parser;
 	while (!temp.empty()) {
 		cout << temp.front().GetValue() << endl;
@@ -121,7 +132,8 @@ void PolishCalculator::printQueue() {
 	}
 }
 
-void PolishCalculator::ToPostfix() {
+void PolishCalculator::ToPostfix()
+{
 
 	while (!parser.empty()) {
 		element e = parser.front();
@@ -161,7 +173,8 @@ void PolishCalculator::ToPostfix() {
 	}
 }
 
-int PolishCalculator::StackToInt(Stack<int> &number) {
+int PolishCalculator::StackToInt(Stack<int> &number)
+{
 	int digit = 1;
 	int ret = 0;
 
@@ -172,7 +185,8 @@ int PolishCalculator::StackToInt(Stack<int> &number) {
 	return ret;
 }
 
-void PolishCalculator::Calculate() {
+void PolishCalculator::Calculate()
+{
 	Stack <double> stack;
 
 	while (!postfix.empty()) {
@@ -210,7 +224,8 @@ void PolishCalculator::Calculate() {
 	cout << stack.tos();
 }
 
-void PolishCalculator::PrintPostfix() {
+void PolishCalculator::PrintPostfix()
+{
 	queue <element> temp = postfix;
 
 	cout << "postfix:";

@@ -30,7 +30,10 @@ class Stack {
 
 private:
 
+	// 스택의 탑을 나타내는 변수
 	int top;
+
+	//실제 데이터가 담기는 공간
 	T stack[1000];
 
 public:
