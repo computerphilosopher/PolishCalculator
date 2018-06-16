@@ -1,32 +1,40 @@
+/* 헤더 중복 포함 방지 */
+#ifndef CALCULATOR_H
+
 #include <string>
 #include <queue>
 #include <stack>
 
 using namespace std;
 
-enum Operation {
+/*연산의 종류를 나타내는 상수
+  괄호는 연산자는 아니지만 우선순위를 나타내기 위해 필요*/
+enum Operation
+{
+
 	ADD,
 	SUB,
 	MUL,
 	DIV,
 	LEFT_PAREN,
 	RIGHT_PAREN,
+
 };
 
-enum DataType {
+/*element에 저장될 타입을 저장하는 함수.
+  연산자, 괄호, 피연산자를 나타냄*/
+enum DataType
+{
+
 	OPERATOR,
 	PARENTHESES,
 	NUMBER,
+
 };
 
-enum Count {
-	STATE_COUNT = 5,
-	SYMBOL_COUNT = 3
-};
 
 /* 변수를 담을 수 있는 스택 구현. 파일 분리가 쉽지 않아 헤더에 포함시킴
    템플릿으로 구현하였기 때문에 정수, 실수, 클래스 등을 모두 저장 가능
-
 */
 template <class T>
 class Stack {
@@ -41,6 +49,8 @@ private:
 
 public:
 
+	/*초기 top의 상태값은 -1.
+	  push할 때 top의 값을 1 증가시키기 때문에 배열의 첫 칸부터 저장하게 됨*/
 	Stack()
 	{
 		top = -1;
@@ -48,6 +58,7 @@ public:
 
 	void push(T e)
 	{	
+
 		top++;
 
 		stack[top] = e;
@@ -57,7 +68,13 @@ public:
 	/*스택의 top을 제거하며 리턴*/
 	T pop()
 	{
-		return stack[top--];
+
+		T ret = stack[top];
+
+		top--;
+
+		return ret;
+
 	}
 
 	/*스택의 top을 리턴(제거하지는 않음*/
@@ -70,10 +87,15 @@ public:
 	bool empty()
 	{
 		if (top == -1) {
+
 			return true;
+
 		}
+
 		else {
-			return false;;
+
+			return false;
+
 		}
 	}
 
@@ -149,4 +171,10 @@ public:
 	void Calculate();
 	
 	void PrintPostfix();
+
 };
+
+
+
+/* 헤더 중복 포함 방지 */
+#endif

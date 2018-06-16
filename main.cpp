@@ -10,6 +10,7 @@ int main()
 {
 
 	string exp;
+
 	cout << "input expression>>";
 
 	cin >> exp;
@@ -23,18 +24,20 @@ int main()
 	cal.Calculate();
 
 	/* 화면이 바로 꺼지는 것을 방지하기 위해 넣음. 없애도 무방*/
-
 	getchar();
 
 	getchar();
 
 }
 
-
+/*element의 생성자.*/
 element::element(int dataType, int value)
 {
+
 	this->dataType = dataType;
+
 	this->value = value;
+
 }
 
 /*기본 생성자. 만약을 대비해 넣음*/
@@ -70,22 +73,27 @@ int element::GetPriority()
 		/* 우선 순위는 숫자가 높을수록 높음*/
 
 	case LEFT_PAREN:
+
 		return 0;
 		break;
 
 	case ADD:
+
 		return 1;
 		break;
 
 	case SUB:
+
 		return 2;
 		break;
 
 	case MUL:
+
 		return 3;
 		break;
 
 	case DIV:
+
 		return 4;
 		break;
 
@@ -114,36 +122,49 @@ PolishCalculator::~PolishCalculator() {
 void PolishCalculator::ParsingExpression()
 {
 	int i = 0;
+
 	while ((unsigned)i < expression.size()) {
+
 		if (isdigit(expression[i])) {
+
 			i = ParsingNum(i);
+
 		}
+
 		else {
+
 			switch (expression[i++]) {
 
 			case '+':
+
 				parser.push(element(OPERATOR, ADD));
 				break;
 
 			case '-':
+
 				parser.push(element(OPERATOR, SUB));
 				break;
 
 			case '*':
+
 				parser.push(element(OPERATOR, MUL));
 				break;
 
 			case '/':
+
 				parser.push(element(OPERATOR, DIV));
 				break;
 
 			case '(':
+
 				parser.push(element(PARENTHESES, LEFT_PAREN));
 				break;
 
 			case ')':
+
 				parser.push(element(PARENTHESES, RIGHT_PAREN));
 				break;
+
 			}
 
 		}
@@ -151,11 +172,13 @@ void PolishCalculator::ParsingExpression()
 
 }
 
-/**/
+/*숫자를 파싱하는 함수. 
+  파싱한 뒤 다음에 볼 문자의 인덱스를 리턴함*/
 int PolishCalculator::ParsingNum(int i)
 {
 	Stack<int> number;
 
+	/*문자의 아스키코드 - '0'을 하면 문자로 표현된 숫자를 정수로 바꾸어주는 효과가 있음*/
 	while (isdigit(expression[i])) {
 		number.push(expression[i++] - '0');
 	}
@@ -180,6 +203,7 @@ void PolishCalculator::printQueue()
 	}
 }
 
+/*중위식을 파싱한 뒤, 후위식으로 바꾸어주는 함수*/
 void PolishCalculator::ToPostfix()
 {
 
@@ -189,11 +213,15 @@ void PolishCalculator::ToPostfix()
 
 		switch (e.GetType()) {
 
+	    /*피연산자는 바로 출력함*/
 		case NUMBER:
+
 			postfix.push(e);
 			break;
 
+		/*왼쪽 괄호는 바로 출력함*/
 		case PARENTHESES:
+
 			if (e.GetValue() == LEFT_PAREN) {
 				stack.push(e);
 			}
@@ -300,20 +328,25 @@ void PolishCalculator::Calculate()
 			switch (value) {
 
 			case ADD:
+
 				stack.push(num1 + num2);
 				break;
 
 			case SUB:
+
 				stack.push(num2 - num1);
 				break;
 
 			case MUL:
+
 				stack.push(num1 * num2);
 				break;
 
 			case DIV:
+
 				stack.push(num2 / num1);
 				break;
+
 			}
 		}
 
@@ -340,27 +373,37 @@ void PolishCalculator::PrintPostfix()
 
 		int value = e.GetValue();
 
+		/* 연산자가 나올 경우 따로 출력으로 지정해주어야 함
+		큐에 담겨 있는 값은 enum을 이용한 정수값이기 때문*/
+
 		if (type == OPERATOR) {
 
 			switch (value) {
 
 			case ADD:
+
 				cout << "+";
 				break;
 
 			case SUB:
+
 				cout << "-";
 				break;
 
 			case MUL:
+
 				cout << "*";
 				break;
 
 			case DIV:
 				cout << "/";
 				break;
+
 			}
 		}
+
+		/*피연산자일 경우 그냥 숫자를 출력함.
+		  후위식에는 괄호가 등장하지 않기 때문에 연산자와 피연산자만 고려하면 됨.*/
 
 		else {
 			cout << value;
@@ -373,9 +416,5 @@ void PolishCalculator::PrintPostfix()
 	}
 
 	cout << endl;
+
 }
-
-
-
-
-
