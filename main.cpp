@@ -1,5 +1,6 @@
 #include <iostream>
 #include <vector>
+#include <queue>
 
 using namespace std;
 
@@ -75,7 +76,7 @@ public:
 
 class PolishCalculator{
 private:
-	Stack <element> stack;
+	queue<element> parser;
 	string expression;
 
 public:
@@ -86,21 +87,27 @@ public:
 
 	void ParsingExpression() {
 		int i = 0;
-		while(i < expression.length()){
+		while((unsigned)i < expression.length()){
 			if (isdigit(expression[i])){
 				i = ParsingNum(i);
 			}
 			else if (expression[i++] == '+') {
-				stack.push(element(OPERATOR, ADD));
+				parser.push(element(OPERATOR, ADD));
 			}
 			else if (expression[i++] == '-') {
-				stack.push(element(OPERATOR, SUB));
+				parser.push(element(OPERATOR, SUB));
+				cout << i << endl;
 			}
 			else if (expression[i++] == '*') {
-				stack.push(element(OPERATOR, SUB));
+				parser.push(element(OPERATOR, SUB));
+				cout << i << endl;
 			}
 			else if (expression[i++] == '/') {
-				stack.push(element(OPERATOR, DIV));
+				parser.push(element(OPERATOR, DIV));
+				cout << i << endl;
+			}
+			else if (expression[i++] == ' ') {
+				cout << i << endl;
 			}
 		}
 	}
@@ -112,14 +119,51 @@ public:
 		}
 
 		int num = StackToInt(number);
-		stack.push(element(NUMBER, num));
+		parser.push(element(NUMBER, num));
 
 		return i;
 	}
 
+	void printQueue() {
+		queue<element> temp = parser;
+		while (!temp.empty()) {
+			cout << temp.front().GetValue() << endl;
+			temp.pop();
+		}
+	}
 
 	void Calculate() {
+		Stack <double> stack;
+		while (!parser.empty()) {
+			element e = parser.front();
+			parser.pop();
 
+			if (e.GetType() == NUMBER) {
+				stack.push(e.GetValue());
+			}
+			else if(e.GetType() == OPERATOR){
+				double num1 = stack.pop();
+				double num2 = stack.pop();
+				cout << num1 << num2 << endl;
+				switch (e.GetValue()) {
+				case ADD:
+					stack.push(num1 + num2);
+					break;
+				case SUB:
+					stack.push(num1 - num2);
+					break;
+				case MUL:
+					stack.push(num1 * num2);
+					break;
+				case DIV:
+					stack.push(num1 / num2);
+					break;
+					
+				}
+			}
+		}
+		double result = stack.pop();
+		cout << result << endl;
 	}
 
 	int StackToInt(Stack<int> &number) {
@@ -138,8 +182,12 @@ public:
 
 int main() {
 
-	string exp = "100+23";
+	string exp = "100 23+";
 	PolishCalculator cal(exp);
 	cal.ParsingExpression();
+
+	cal.printQueue();
+	getchar();
+
 
 }
