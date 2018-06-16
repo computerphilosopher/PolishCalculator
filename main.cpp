@@ -5,17 +5,18 @@
 using namespace std;
 
 enum Operation {
-	ADD, 
-	SUB, 
-	MUL, 
-	DIV
-};
-
-enum DataType{
-	OPERATOR,
-	NUMBER,
+	ADD,
+	SUB,
+	MUL,
+	DIV,
 	LEFT_PAREN,
 	RIGHT_PAREN,
+};
+
+enum DataType {
+	OPERATOR,
+	PARENTHESES,
+	NUMBER,
 };
 
 
@@ -28,9 +29,9 @@ template <class T>
 class Stack {
 private:
 	int top;
-T stack[1000];
+	T stack[1000];
 public:
-	Stack(){
+	Stack() {
 		top = -1;
 	}
 	void push(T e) {
@@ -66,51 +67,80 @@ public:
 	int GetType() {
 		return dataType;
 	}
-	
+
 	int GetValue() {
 		return value;
+	}
+	int GetPriority() {
+		switch (value) {
+		case LEFT_PAREN:
+			return 0;
+			break;
+		case ADD:
+			return 1;
+			break;
+		case SUB:
+			return 1;
+			break;
+		case MUL:
+			return 2;
+			break;
+		case DIV:
+			return 2;
+			break;
+		}
+		return -1;
 	}
 
 };
 
 
-class PolishCalculator{
+class PolishCalculator {
 private:
 	queue<element> parser;
 	string expression;
+	queue<element> postfix;
+	Stack<element> stack;
 
 public:
-	
+
 	PolishCalculator(string expression) {
 		this->expression = expression;
 	}
 
 	void ParsingExpression() {
 		int i = 0;
-		while((unsigned)i < expression.length()){
-			if (isdigit(expression[i])){
+		while ((unsigned)i < expression.size()) {
+			if (isdigit(expression[i])) {
 				i = ParsingNum(i);
 			}
-			else if (expression[i++] == '+') {
-				parser.push(element(OPERATOR, ADD));
-			}
-			else if (expression[i++] == '-') {
-				parser.push(element(OPERATOR, SUB));
-				cout << i << endl;
-			}
-			else if (expression[i++] == '*') {
-				parser.push(element(OPERATOR, SUB));
-				cout << i << endl;
-			}
-			else if (expression[i++] == '/') {
-				parser.push(element(OPERATOR, DIV));
-				cout << i << endl;
-			}
-			else if (expression[i++] == ' ') {
-				cout << i << endl;
+			else {
+				switch (expression[i++]) {
+				case '+':
+					parser.push(element(OPERATOR, ADD));
+					break;
+				case '-':
+					parser.push(element(OPERATOR, SUB));
+					break;
+				case '*':
+					parser.push(element(OPERATOR, MUL));
+					break;
+				case '/':
+					parser.push(element(OPERATOR, DIV));
+					break;
+				case '(':
+					parser.push(element(PARENTHESES, LEFT_PAREN));
+					break;
+				case ')':
+					parser.push(element(PARENTHESES, RIGHT_PAREN));
+					break;
+				}
+
 			}
 		}
+
 	}
+
 	int ParsingNum(int i) {
 		Stack<int> number;
 
@@ -132,38 +162,43 @@ public:
 		}
 	}
 
-	void Calculate() {
-		Stack <double> stack;
+	void ToPostfix() {
 		while (!parser.empty()) {
 			element e = parser.front();
-			parser.pop();
 
-			if (e.GetType() == NUMBER) {
-				stack.push(e.GetValue());
-			}
-			else if(e.GetType() == OPERATOR){
-				double num1 = stack.pop();
-				double num2 = stack.pop();
-				cout << num1 << num2 << endl;
-				switch (e.GetValue()) {
-				case ADD:
-					stack.push(num1 + num2);
-					break;
-				case SUB:
-					stack.push(num1 - num2);
-					break;
-				case MUL:
-					stack.push(num1 * num2);
-					break;
-				case DIV:
-					stack.push(num1 / num2);
-					break;
-					
+			switch (e.GetType()) {
+			case NUMBER:
+				postfix.push(e);
+				break;
+			case PARENTHESES:
+				if (e.GetValue() == LEFT_PAREN) {
+					stack.push(e);
 				}
+
+				//오른쪽 괄호일 때
+				else {
+					element temp = stack.tos();
+					while (temp.GetValue() != LEFT_PAREN) {
+						temp = stack.pop();
+						postfix.push(temp);
+					}
+				}
+				break;
+			case OPERATOR:
+				element temp = stack.tos();
+				while (temp.GetPriority() > e.GetPriority()) {
+					temp = stack.pop();
+					postfix.push(temp);
+				}
+				stack.push(e);
+				break;
 			}
+			parser.pop();
 		}
-		double result = stack.pop();
-		cout << result << endl;
+
+		while (!stack.empty()) {
+			postfix.push(stack.pop());
+		}
 	}
 
 	int StackToInt(Stack<int> &number) {
@@ -177,16 +212,61 @@ public:
 		return ret;
 	}
 
+	void PrintPostfix() {
+		queue <element> temp = postfix;
+
+			cout << "postfix:";
+		while (!temp.empty()) {
+			element e = temp.front();
+			
+			int type = e.GetType();
+			int value = e.GetValue();
+
+			if (type == OPERATOR) {
+				switch (value) {
+				case ADD:
+					cout << "+";
+					break;
+				case SUB:
+					cout << "-";
+					break;
+				case MUL:
+					cout << "*";
+					break;
+				case DIV:
+					cout << "/";
+					break;
+				}
+			}
+
+			else {
+				cout << value;
+			}
+			temp.pop();
+				cout << " ";
+
+		}
+			cout << endl;
+	}
+
 
 };
 
+
+
+
 int main() {
 
-	string exp = "100 23+";
+	string exp = "100+23*(25-23)";
 	PolishCalculator cal(exp);
 	cal.ParsingExpression();
 
-	cal.printQueue();
+	//cal.printQueue();
+	cal.ToPostfix();
+
+
+	cal.PrintPostfix();
+
 	getchar();
 
 
