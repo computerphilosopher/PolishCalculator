@@ -12,29 +12,15 @@ enum Operation {
 
 enum DataType{
 	OPERATOR,
-	INTEGER,
-	DOUBLE,
+	NUMBER,
 	LEFT_PAREN,
 	RIGHT_PAREN,
 };
 
-enum Symbol {
-	NUM,
-	DOT,
-	OTHERS
-};
 
 enum Count {
 	STATE_COUNT = 5,
 	SYMBOL_COUNT = 3
-};
-
-enum STATE {
-	START,
-	INPUT_INT,
-	INPUT_DECIMAL,
-	END,
-	ERROR
 };
 
 template <class T>
@@ -66,10 +52,10 @@ public:
 class element {
 private:
 	int dataType;
-	double value;
+	int value;
 
 public:
-	element(int dataType, double value) {
+	element(int dataType, int value) {
 		this->dataType = dataType;
 		this->value = value;
 	}
@@ -96,11 +82,39 @@ public:
 	
 	PolishCalculator(string expression) {
 		this->expression = expression;
-		cout << ParsingNum(0).GetValue() << endl;
 	}
 
-	element ParsingNum(int i) {
-		Stack<int> integerPart;
+	void ParsingExpression() {
+		int i = 0;
+		while(i < expression.length()){
+			if (isdigit(expression[i])){
+				i = ParsingNum(i);
+			}
+			else if (expression[i++] == '+') {
+				stack.push(element(OPERATOR, ADD));
+			}
+			else if (expression[i++] == '-') {
+				stack.push(element(OPERATOR, SUB));
+			}
+			else if (expression[i++] == '*') {
+				stack.push(element(OPERATOR, SUB));
+			}
+			else if (expression[i++] == '/') {
+				stack.push(element(OPERATOR, DIV));
+			}
+		}
+	}
+	int ParsingNum(int i) {
+		Stack<int> number;
+
+		while (isdigit(expression[i])) {
+			number.push(expression[i++] - '0');
+		}
+
+		int num = StackToInt(number);
+		stack.push(element(NUMBER, num));
+
+		return i;
 	}
 
 
@@ -124,10 +138,8 @@ public:
 
 int main() {
 
-	string exp = "123.23";
-	Stack<element> p;
-	p.push(element(INTEGER, 5.0));
+	string exp = "100+23";
+	PolishCalculator cal(exp);
+	cal.ParsingExpression();
 
-	cout << p.pop().GetValue() << endl;
-	getchar();
 }
