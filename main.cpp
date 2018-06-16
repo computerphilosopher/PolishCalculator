@@ -53,48 +53,42 @@ public:
 	}
 };
 
-class element {
-private:
-	int dataType;
-	int value;
 
-public:
-	element(int dataType, int value) {
-		this->dataType = dataType;
-		this->value = value;
-	}
-	element() {
+element::element(int dataType, int value) {
+	this->dataType = dataType;
+	this->value = value;
+}
+element::element() {
 
-	}
-	int GetType() {
-		return dataType;
-	}
+}
+int element::GetType() {
+	return dataType;
+}
 
-	int GetValue() {
-		return value;
+int element::GetValue() {
+	return value;
+}
+int element::GetPriority() {
+	switch (value) {
+	case LEFT_PAREN:
+		return 0;
+		break;
+	case ADD:
+		return 1;
+		break;
+	case SUB:
+		return 1;
+		break;
+	case MUL:
+		return 2;
+		break;
+	case DIV:
+		return 2;
+		break;
 	}
-	int GetPriority() {
-		switch (value) {
-		case LEFT_PAREN:
-			return 0;
-			break;
-		case ADD:
-			return 1;
-			break;
-		case SUB:
-			return 1;
-			break;
-		case MUL:
-			return 2;
-			break;
-		case DIV:
-			return 2;
-			break;
-		}
-		return -1;
-	}
+	return -1;
+}
 
-};
 
 
 PolishCalculator::PolishCalculator(string expression) {
