@@ -6,58 +6,30 @@
 
 using namespace std;
 
-enum Operation {
-	ADD,
-	SUB,
-	MUL,
-	DIV,
-	LEFT_PAREN,
-	RIGHT_PAREN,
-};
+int main() {
 
-enum DataType {
-	OPERATOR,
-	PARENTHESES,
-	NUMBER,
-};
+	string exp;
+	cout << "input expression>>";
 
+	cin >> exp;
 
-enum Count {
-	STATE_COUNT = 5,
-	SYMBOL_COUNT = 3
-};
+	PolishCalculator cal(exp);
+	cal.ParsingExpression();
 
-template <class T>
-class Stack {
-private:
-	int top;
-	T stack[1000];
-public:
-	Stack() {
-		top = -1;
-	}
-	void push(T e) {
-		stack[++top] = e;
-	}
-	T pop() {
-		return stack[top--];
-	}
-	T tos() {
-		return stack[top];
-	}
-	bool empty() {
-		return top == -1;
-	}
-	int size() {
-		return top + 1;
-	}
-};
+	cal.ToPostfix();
 
+	cal.Calculate();
+
+	getchar();
+	getchar();
+
+}
 
 element::element(int dataType, int value) {
 	this->dataType = dataType;
 	this->value = value;
 }
+
 element::element() {
 
 }
@@ -88,7 +60,6 @@ int element::GetPriority() {
 	}
 	return -1;
 }
-
 
 
 PolishCalculator::PolishCalculator(string expression) {
@@ -279,21 +250,3 @@ void PolishCalculator::PrintPostfix() {
 
 
 
-int main() {
-
-	string exp;
-	cout << "input expression>>";
-
-	cin >> exp;
-
-	PolishCalculator cal(exp);
-	cal.ParsingExpression();
-
-	cal.ToPostfix();
-
-	cal.Calculate();
-
-	getchar();
-	getchar();
-
-}
