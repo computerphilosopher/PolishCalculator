@@ -212,6 +212,44 @@ public:
 		return ret;
 	}
 
+	void Calculate() {
+		Stack <double> stack;
+
+		while (!postfix.empty()){
+			element e = postfix.front();
+			
+			int type = e.GetType(); 
+			int value= e.GetValue(); 
+
+			double result = 0.0;
+			if (type == NUMBER) {
+				stack.push(value);
+			}
+			
+			else if (type == OPERATOR) {
+					double num1 = stack.pop();
+					double num2 = stack.pop();
+
+				switch (value) {
+				case ADD:	
+					stack.push(num1 + num2);
+					break;
+				case SUB:
+					stack.push(num1 - num2);
+					break;
+				case MUL:
+					stack.push(num1 * num2);
+					break;
+				case DIV:
+					stack.push(num1 * num2);
+					break;
+				}
+			}	
+			postfix.pop();
+		}
+		cout << stack.tos();
+	}
+
 	void PrintPostfix() {
 		queue <element> temp = postfix;
 
@@ -257,15 +295,14 @@ public:
 
 int main() {
 
-	string exp = "100+23*(25-23)";
+	string exp = "100+23";
 	PolishCalculator cal(exp);
 	cal.ParsingExpression();
 
 	//cal.printQueue();
 	cal.ToPostfix();
 
-
-	cal.PrintPostfix();
+	cal.Calculate();
 
 	getchar();
 
