@@ -33,6 +33,7 @@ element::element(int dataType, int value) {
 element::element() {
 
 }
+
 int element::GetType() {
 	return dataType;
 }
